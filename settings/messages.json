@@ -1,0 +1,15 @@
+{
+    "onboarding": {
+        "welcome": "Olá! Sou seu assistente de controle de despesas pessoais!\n\n_*Primeiro, digite como você gostaria de ser chamado:*_",
+        "askAge": "Perfeito! Agora me diga:\n\n_*Quantos anos você tem?*_",
+        "askGoal": "Perfeito! Agora me diga:\n\n_*Qual é o seu objetivo ao utilizar este sistema?*_",
+        "askLimit": "Perfeito! Agora me diga:\n\n_*E qual é o seu limite mensal de gastos?*_",
+        "invalidAge": "Por favor, informe uma idade válida.\n\n_*Exemplo: 25*_",
+        "invalidLimit": "Por favor, informe um valor numérico válido para o limite mensal.\n\n_*Exemplo: 1500*_",
+        "successTemplate": "Perfeito, *{{name}}*!\n\n*Seu perfil foi configurado com sucesso.*\n\n• *Seu limite mensal é: R$ {{limit}}*\n\nA partir de agora, basta digitar os seus gastos aqui sempre que quiser registrá-los!\n\n_*Exemplo: \"Gasolina 50\" ou \"Almoço 30 e estacionamento 10\"*_"
+    },
+    "flow": {
+        "expenseReceived": "*ESTAMOS EM MANUTENÇÃO!*",
+        "notRegistered": "Olá! Para começarmos a organizar suas finanças, por favor envie o comando:\n\n_*/INIT*_"
+    }
+}
