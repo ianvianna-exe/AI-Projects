@@ -118,3 +118,4 @@ Observações importantes:
 
 CRITICAL RULES FOR VALIDATION:
 - Se a mensagem contiver APENAS uma descrição sem nenhum valor numérico associado, você está PROIBIDO de preencher amount como 0, null ou omitir. Você DEVE acionar o Tratamento de Erros e retornar APENAS o objeto com a propriedade "error".
+- Se a mensagem do usuário contiver quebras de linha (múltiplas linhas), trate cada linha como uma despesa potencial independente, processe todas elas e retorne todos os itens identificados dentro do mesmo ARRAY JSON.
