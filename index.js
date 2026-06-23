@@ -60,6 +60,8 @@ async function processIncomingFlow(userId, message, sendMessage) {
             const profile = onboardingService.getUserProfile(userId);
             if (profile) {
                 fs.writeFileSync(userFile, JSON.stringify(profile, null, 4));
+                // Dispara o menu de ajuda automaticamente após o sucesso do onboarding
+                await sendMessage(messages.flow.reportHelp);
             }
         }
         return;
@@ -71,6 +73,96 @@ async function processIncomingFlow(userId, message, sendMessage) {
             return;
         }
 
+        // Comando: /AJUDA
+        if (cleanedMessage.toUpperCase() === '/AJUDA') {
+            await sendMessage(messages.flow.reportHelp);
+            return;
+        }
+
+        // Comando: /RESUMO_MENSAL
+        if (cleanedMessage.toUpperCase() === '/RESUMO_MENSAL') {
+            const summary = expenseService.getMonthlySummary(userId);
+            if (summary.error) {
+                await sendMessage(messages.flow.expenseError.replace('{{error}}', summary.error));
+                return;
+            }
+            if (summary.categories.length === 0) {
+                await sendMessage(messages.flow.reportEmpty);
+                return;
+            }
+
+            let categoryLines = '';
+            for (const cat of summary.categories) {
+                categoryLines += `• ${cat.name}: R$ ${cat.amount.toFixed(2)}\n`;
+            }
+
+            const response = messages.flow.reportMonthly
+                .replace('{{name}}', summary.name)
+                .replace('{{categories}}', categoryLines.trim())
+                .replace('{{spent}}', summary.currentMonthSpent.toFixed(2))
+                .replace('{{limit}}', summary.monthlyLimit.toFixed(2));
+
+            await sendMessage(response);
+            return;
+        }
+
+        // Comando: /RESUMO_TOTAL
+        if (cleanedMessage.toUpperCase() === '/RESUMO_TOTAL') {
+            const totalSummary = expenseService.getTotalSummary(userId);
+            if (totalSummary.error) {
+                await sendMessage(messages.flow.expenseError.replace('{{error}}', totalSummary.error));
+                return;
+            }
+
+            let categoryLines = '';
+            if (totalSummary.categories.length === 0) {
+                categoryLines = '_Nenhum gasto este mês._';
+            } else {
+                for (const cat of totalSummary.categories) {
+                    categoryLines += `• ${cat.name}: R$ ${cat.amount.toFixed(2)}\n`;
+                }
+            }
+
+            const response = messages.flow.reportTotal
+                .replace('{{name}}', totalSummary.name)
+                .replace('{{categories}}', categoryLines.trim())
+                .replace('{{spent}}', totalSummary.currentMonthSpent.toFixed(2))
+                .replace('{{historyTotal}}', totalSummary.historyTotal.toFixed(2))
+                .replace('{{withinLimitMonths}}', totalSummary.monthsWithinLimit)
+                .replace('{{totalMonths}}', totalSummary.totalMonths);
+
+            await sendMessage(response);
+            return;
+        }
+
+        // Comando: /EXTRATO
+        if (cleanedMessage.toUpperCase() === '/EXTRATO') {
+            const statement = expenseService.getStatement(userId);
+            if (statement.error) {
+                await sendMessage(messages.flow.expenseError.replace('{{error}}', statement.error));
+                return;
+            }
+            if (statement.expenses.length === 0) {
+                await sendMessage(messages.flow.reportEmpty);
+                return;
+            }
+
+            let expenseLines = '';
+            for (const exp of statement.expenses) {
+                const dateObj = new Date(exp.created_at);
+                const dateStr = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                expenseLines += `• [${dateStr}] ${exp.description}: R$ ${exp.amount.toFixed(2)}\n`;
+            }
+
+            const response = messages.flow.reportStatement
+                .replace('{{name}}', statement.name)
+                .replace('{{expenses}}', expenseLines.trim());
+
+            await sendMessage(response);
+            return;
+        }
+
+        // Fluxo normal de cadastro via IA
         const aiResult = await aiService.parseExpense(cleanedMessage);
 
         if (aiResult.error) {

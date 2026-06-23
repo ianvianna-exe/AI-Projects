@@ -10,11 +10,16 @@
     },
     "flow": {
         "expenseReceived": "❌ *ESTAMOS EM MANUTENÇÃO!*",
-        "notRegistered": "Olá! Para começarmos a organizar suas finanças, por favor envie o comando:\n\n_*/INIT*_",
+        "notRegistered": "Olá! Para começarmos a organizar suas finanças, por favor envie o comando:\n\n_*/INICIAR*_",
         "expenseSuccess": "*{{name}}, sua despesa foi armazenada com sucesso!*\n\n{{expenses}}\n\n{{limitStatus}}{{alert}}\nGastos: R$ {{spent}}\nLimite mensal: R$ {{limit}}",
         "expenseError": "❌ Ocorreu um erro ao processar sua despesa:\n\n{{error}}",
         "statusWithinLimit": "✅ *Você está dentro do limite do mês!*",
         "statusOverLimit": "⚠️ *ATENÇÃO: VOCÊ ULTRAPASSOU O SEU LIMITE DO MÊS!*",
-        "statusNearLimit": "\n*ATENÇÃO:* Você já atingiu {{percentage}}% do seu limite mensal!"
+        "statusNearLimit": "\n*ATENÇÃO:* Você já atingiu {{percentage}}% do seu limite mensal!",
+        "reportMonthly": "📊 *RESUMO MENSAL - {{name}}*\n\n*Gastos por Categoria:*\n{{categories}}\n\nTotal acumulado: R$ {{spent}} / R$ {{limit}}",
+        "reportTotal": "📊 *RESUMO TOTAL - {{name}}*\n\n*Mês Atual:*\n{{categories}}\nTotal do mês: R$ {{spent}}\n\n*Meses Anteriores:*\nAcumulado histórico: R$ {{historyTotal}}\nHistórico: {{withinLimitMonths}} de {{totalMonths}} meses dentro do limite esperado!",
+        "reportStatement": "🧾 *EXTRATO (ÚLTIMOS 30 GASTOS) - {{name}}*\n\n{{expenses}}",
+        "reportEmpty": "Nenhum gasto registrado para gerar este relatório.",
+        "reportHelp": "💡 *COMO USAR O ASSISTENTE DE GASTOS*\n\nPara registrar novas despesas, basta digitar o que comprou e o valor na mesma linha (pode enviar vários de uma vez!):\n_*Exemplo: \"Mercado 120\" ou \"Gasolina 50 e Lanche 30\"*_\n\nSe precisar consultar suas finanças, use um dos comandos abaixo:\n\n`/RESUMO_MENSAL` - Mostra seus gastos do mês atual separados por categoria.\n`/RESUMO_TOTAL` - Mostra o resumo do mês atual e o acumulado de meses anteriores.\n`/EXTRATO` - Lista as suas últimas 30 despesas registradas em ordem cronológica.\n`/AJUDA` - Exibe este menu de instruções novamente."
     }
 }
