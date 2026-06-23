@@ -45,8 +45,8 @@ Regras de classificação:
 - Se houver dúvidas, use "Outros"
 - Não inventar categorias fora da lista
 
-Saída padrão:
-Retornar sempre JSON válido, sem texto adicional.
+Saída padrão (Gasto unitário):
+Retornar sempre um ARRAY JSON válido na raiz, sem texto adicional.
 [
   {
     "description": "Gasolina",
@@ -57,7 +57,7 @@ Retornar sempre JSON válido, sem texto adicional.
 ]
 
 Tratamento de erros:
-- Sem valor informado, retornar:
+- Sem valor informado ou se a mensagem contiver APENAS uma descrição (ex: "Gasolina", "Pedágio") sem nenhum valor numérico associado, retornar estritamente:
 {
   "error": "O valor não foi mencionado."
 }
@@ -77,14 +77,14 @@ Tratamento de erros:
   }
 ]
 
-- Múltiplos gastos na mesma mensagem, separar corretamente cada gasto identificado:
+- Múltiplos gastos na mesma mensagem, separar corretamente cada gasto identificado dentro do mesmo ARRAY JSON:
 [
   {
     "description": "Almoço",
     "amount": 30.00,
     "category": "Alimentação",
     "created_at": "2026-06-21T15:30:45-03:00"
-  ",
+  },
   {
     "description": "Estacionamento",
     "amount": 10.00,
@@ -100,7 +100,7 @@ Tratamento de erros:
 ]
 
 Regras de descrição:
-- Sempre retornar em formato de título:
+- Sempre retornar em formato de título
 - Corrigir gramática, acentuação e preposições
 - Melhorar clareza sem alterar significado
 - Exemplos:
@@ -115,3 +115,6 @@ Observações importantes:
 - Se incluir apenas data, assumir 00:00 (meia-noite)
 - Sempre converter valores para número decimal com ponto
 - Nunca criar categorias fora da lista definida
+
+CRITICAL RULES FOR VALIDATION:
+- Se a mensagem contiver APENAS uma descrição sem nenhum valor numérico associado, você está PROIBIDO de preencher amount como 0, null ou omitir. Você DEVE acionar o Tratamento de Erros e retornar APENAS o objeto com a propriedade "error".

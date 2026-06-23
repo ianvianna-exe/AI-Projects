@@ -1,5 +1,7 @@
+require('dotenv').config();
 const { connectWhatsApp } = require('./whatsapp-connector/whatsapp-connector');
 const onboardingService = require('./services/onboarding-service');
+const aiService = require('./services/ai-service');
 const messages = require('./settings/messages.json');
 const readline = require('readline');
 const fs = require('fs');
@@ -65,9 +67,11 @@ async function processIncomingFlow(userId, message, sendMessage) {
     if (fs.existsSync(userFile) || onboardingService.isUserRegistered(userId)) {
         if (cleanedMessage === 'ping') {
             await sendMessage('pong');
-        } else {
-            await sendMessage(messages.flow.expenseReceived);
+            return;
         }
+
+        const aiResult = await aiService.parseExpense(cleanedMessage);
+        await sendMessage(JSON.stringify(aiResult, null, 2));
     } else {
         await sendMessage(messages.flow.notRegistered);
     }
