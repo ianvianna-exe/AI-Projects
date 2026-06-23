@@ -1,3 +1,4 @@
 node_modules/
+settings/users
 whatsapp-connector/whatsapp-sessions/
 .env
