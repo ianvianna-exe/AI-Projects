@@ -2,6 +2,7 @@ require('dotenv').config();
 const { connectWhatsApp } = require('./whatsapp-connector/whatsapp-connector');
 const onboardingService = require('./services/onboarding-service');
 const aiService = require('./services/ai-service');
+const expenseService = require('./services/expense-service');
 const messages = require('./settings/messages.json');
 const readline = require('readline');
 const fs = require('fs');
@@ -71,6 +72,19 @@ async function processIncomingFlow(userId, message, sendMessage) {
         }
 
         const aiResult = await aiService.parseExpense(cleanedMessage);
+
+        if (aiResult.error) {
+            await sendMessage(JSON.stringify(aiResult, null, 2));
+            return;
+        }
+
+        const saveResult = expenseService.saveExpense(userId, aiResult);
+
+        if (saveResult.error) {
+            await sendMessage(JSON.stringify({ error: saveResult.error }, null, 2));
+            return;
+        }
+
         await sendMessage(JSON.stringify(aiResult, null, 2));
     } else {
         await sendMessage(messages.flow.notRegistered);
