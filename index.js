@@ -48,7 +48,7 @@ async function processIncomingFlow(userId, message, sendMessage) {
     const cleanedMessage = message.trim();
     const userFile = path.join(usersDir, `${userId}.json`);
 
-    if (cleanedMessage.toUpperCase() === '/INIT') {
+    if (cleanedMessage.toUpperCase() === '/INICIAR') {
         await onboardingService.startOnboarding(sendMessage, userId);
         return;
     }
@@ -74,18 +74,46 @@ async function processIncomingFlow(userId, message, sendMessage) {
         const aiResult = await aiService.parseExpense(cleanedMessage);
 
         if (aiResult.error) {
-            await sendMessage(JSON.stringify(aiResult, null, 2));
+            const errMessage = messages.flow.expenseError.replace('{{error}}', aiResult.error);
+            await sendMessage(errMessage);
             return;
         }
 
         const saveResult = expenseService.saveExpense(userId, aiResult);
 
         if (saveResult.error) {
-            await sendMessage(JSON.stringify({ error: saveResult.error }, null, 2));
+            const errMessage = messages.flow.expenseError.replace('{{error}}', saveResult.error);
+            await sendMessage(errMessage);
             return;
         }
 
-        await sendMessage(JSON.stringify(aiResult, null, 2));
+        const profile = saveResult.profile;
+        const expensesAdded = Array.isArray(aiResult) ? aiResult : [aiResult];
+
+        let expenseLines = '';
+        for (const exp of expensesAdded) {
+            expenseLines += `- ${exp.description} (${exp.category}): R$ ${exp.amount.toFixed(2)}\n`;
+        }
+
+        const isOverLimit = profile.currentMonthSpent > profile.monthlyLimit;
+        const limitStatus = isOverLimit ? messages.flow.statusOverLimit : messages.flow.statusWithinLimit;
+
+        let alertMessage = '';
+        const percentageSpent = Math.round((profile.currentMonthSpent / profile.monthlyLimit) * 100);
+
+        if (percentageSpent >= 75 && !isOverLimit) {
+            alertMessage = messages.flow.statusNearLimit.replace('{{percentage}}', percentageSpent);
+        }
+
+        const successMessage = messages.flow.expenseSuccess
+            .replace('{{name}}', profile.name)
+            .replace('{{expenses}}', expenseLines.trim())
+            .replace('{{limitStatus}}', limitStatus)
+            .replace('{{alert}}', alertMessage)
+            .replace('{{spent}}', profile.currentMonthSpent.toFixed(2))
+            .replace('{{limit}}', profile.monthlyLimit.toFixed(2));
+
+        await sendMessage(successMessage);
     } else {
         await sendMessage(messages.flow.notRegistered);
     }

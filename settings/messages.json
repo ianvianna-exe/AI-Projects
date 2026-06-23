@@ -9,7 +9,12 @@
         "successTemplate": "Perfeito, *{{name}}*!\n\n*Seu perfil foi configurado com sucesso.*\n\n• *Seu limite mensal é: R$ {{limit}}*\n\nA partir de agora, basta digitar os seus gastos aqui sempre que quiser registrá-los!\n\n_*Exemplo: \"Gasolina 50\" ou \"Almoço 30 e estacionamento 10\"*_"
     },
     "flow": {
-        "expenseReceived": "*ESTAMOS EM MANUTENÇÃO!*",
-        "notRegistered": "Olá! Para começarmos a organizar suas finanças, por favor envie o comando:\n\n_*/INIT*_"
+        "expenseReceived": "❌ *ESTAMOS EM MANUTENÇÃO!*",
+        "notRegistered": "Olá! Para começarmos a organizar suas finanças, por favor envie o comando:\n\n_*/INIT*_",
+        "expenseSuccess": "*{{name}}, sua despesa foi armazenada com sucesso!*\n\n{{expenses}}\n\n{{limitStatus}}{{alert}}\nGastos: R$ {{spent}}\nLimite mensal: R$ {{limit}}",
+        "expenseError": "❌ Ocorreu um erro ao processar sua despesa:\n\n{{error}}",
+        "statusWithinLimit": "✅ *Você está dentro do limite do mês!*",
+        "statusOverLimit": "⚠️ *ATENÇÃO: VOCÊ ULTRAPASSOU O SEU LIMITE DO MÊS!*",
+        "statusNearLimit": "\n*ATENÇÃO:* Você já atingiu {{percentage}}% do seu limite mensal!"
     }
 }
